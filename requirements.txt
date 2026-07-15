@@ -5,7 +5,7 @@ pymongo==4.5.0
 beanie==1.23.0
 pydantic==2.4.0
 pydantic-settings==2.4.0
-pydantic-core==2.10.1
+pydantic-core==2.10.1 --only-binary=:all:
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
