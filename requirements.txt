@@ -1,9 +1,10 @@
+
 fastapi==0.111.0
 uvicorn[standard]==0.30.0
 motor==3.4.0
 pymongo==4.7.2
 beanie==1.26.0
-pydantic[email]==2.7.1
+pydantic==2.7.1
 pydantic-settings==2.3.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
@@ -13,3 +14,4 @@ python-dotenv==1.0.1
 aiohttp==3.9.5
 slowapi==0.1.9
 sendgrid==6.11.0
+email-validator==2.1.0
