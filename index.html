@@ -1167,8 +1167,8 @@ function selectNet(el, ctx) {
   el.closest('.network-row').querySelectorAll('.net-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   const label = el.textContent.trim();
-  if (ctx === 'airtime') selectedNet.airtime = NET_MAP[label] || 'mtn';
-  else { selectedNet.data = DATA_SVC_MAP[label] || 'mtn-data'; loadDataPlans(); }
+ if (ctx === 'airtime') selectedNet.airtime = NET_MAP[label.toLowerCase()] || 'mtn';
+else { selectedNet.data = DATA_SVC_MAP[label.toLowerCase()] || 'mtn-data'; loadDataPlans(); }
 }
 
 // ════════════════════════════════════════════════════════
