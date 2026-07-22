@@ -451,7 +451,38 @@ async def buy_airtime(body: AirtimeRequest, current_user: User = Depends(get_cur
         amount_naira=tx.amount_naira, description=tx.description, created_at=tx.created_at,
     )
 
+NETWORK_MAP = {
+    "mtn-data":      {"clubkonnect_key": "MTN",       "network_code": "01"},
+    "glo-data":      {"clubkonnect_key": "Glo",       "network_code": "02"},
+    "etisalat-data": {"clubkonnect_key": "m_9mobile", "network_code": "03"},
+    "airtel-data":   {"clubkonnect_key": "Airtel",    "network_code": "04"},
+}
 
+@app.get("/api/v1/services/data/plans/{network_slug}")
+async def get_data_plans(network_slug: str):
+    mapping = NETWORK_MAP.get(network_slug)
+    if not mapping:
+        raise HTTPException(404, "Unknown network")
+
+    url = f"https://www.nellobytesystems.com/APIDatabundlePlansV2.asp?UserID={CLUBKONNECT_USER_ID}"
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.get(url)
+    data = resp.json()
+
+    network_data = data.get(mapping["clubkonnect_key"])
+    if not network_data:
+        raise HTTPException(502, "Provider did not return plans for this network")
+
+    products = network_data[0].get("PRODUCT", [])
+    variations = [
+        {
+            "variation_code": p["PRODUCT_CODE"],
+            "name": p["PRODUCT_NAME"],
+            "variation_amount": round(float(p["PRODUCT_AMOUNT"]))
+        }
+        for p in products
+    ]
+    return {"content": {"varations": variations}}
 @app.post("/api/v1/services/data", response_model=TxResponse)
 async def buy_data(body: DataRequest, current_user: User = Depends(get_current_user)):
     desc = f"{body.network.upper()} Data → {body.phone}"
