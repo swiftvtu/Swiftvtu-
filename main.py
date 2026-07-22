@@ -470,7 +470,7 @@ async def get_data_plans(network_slug: str):
         resp = await client.get(url)
     data = resp.json()
 
-    network_data = data.get(clubkonnect_key)
+    network_data = data.get("MOBILE_NETWORK", {}).get(clubkonnect_key)
     if not network_data:
         raise HTTPException(502, "Provider did not return plans for this network")
 
