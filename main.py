@@ -264,7 +264,14 @@ async def clubkonnect_buy_airtime(network: str, phone: str, amount: float, ref: 
     async with httpx.AsyncClient(timeout=30) as client:
         try:
             resp = await client.get(f"{CLUBKONNECT_BASE_URL}/APIAirtimeV1.asp", params=params)
-            return {"status": "success", "raw": resp.text}
+            try:
+                data = resp.json()
+            except Exception:
+                return {"status": "error", "message": "Invalid response from provider", "raw": resp.text}
+            provider_status = data.get("status", "")
+            if provider_status in ("ORDER_COMPLETED", "ORDER_RECEIVED"):
+                return {"status": "success", "raw": resp.text, "provider_status": provider_status}
+            return {"status": "error", "message": provider_status or "Unknown error", "raw": resp.text}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
@@ -284,7 +291,14 @@ async def clubkonnect_buy_data(network: str, phone: str, plan_code: str, ref: st
     async with httpx.AsyncClient(timeout=30) as client:
         try:
             resp = await client.get(f"{CLUBKONNECT_BASE_URL}/APIDatabundleV1.asp", params=params)
-            return {"status": "success", "raw": resp.text}
+            try:
+                data = resp.json()
+            except Exception:
+                return {"status": "error", "message": "Invalid response from provider", "raw": resp.text}
+            provider_status = data.get("status", "")
+            if provider_status in ("ORDER_COMPLETED", "ORDER_RECEIVED"):
+                return {"status": "success", "raw": resp.text, "provider_status": provider_status}
+            return {"status": "error", "message": provider_status or "Unknown error", "raw": resp.text}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
